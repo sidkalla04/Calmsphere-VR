@@ -16,6 +16,7 @@ export async function sendProgress(data) {
       throw error;
     }
   }
+  //hello
   
   export async function logAnxiety(level, anxietyLevel) {
     try {
