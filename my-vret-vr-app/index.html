@@ -1,13 +1,133 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite App</title>
-  </head>
-  <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>CalmSphere VRET</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+    .a-enter-vr-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+    .info-panel {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.5);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 999;
+    }
+  </style>
+  <!-- A-Frame -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+</head>
+<body>
+  <div class="info-panel">
+    CalmSphere VRET - Height Exposure Therapy
+  </div>
+
+  <!-- VR container -->
+  <a-scene vr-mode-ui="enabled: true">
+    <a-assets>
+      <!-- Using the image from your second screenshot as a placeholder -->
+      <img id="lvl1" src="./public/vr-assets/height-2.png" crossorigin="anonymous">
+      <!-- Audio guidance -->
+      <audio id="guide" src="#" crossorigin="anonymous"></audio>
+    </a-assets>
+
+    <!-- Sky (360° environment) -->
+    <a-sky id="sky" src="#lvl1" rotation="0 -130 0"></a-sky>
+
+    <!-- Instruction text -->
+    <a-text id="instruction"
+            value="Level 1: Step onto the balcony"
+            position="0 2 -3"
+            align="center"
+            color="#FFFFFF"
+            scale="1.5 1.5 1.5"
+            font="kelsonsans">
+    </a-text>
+
+    <!-- Next button -->
+    <a-entity id="nextBtn" position="0 1.2 -2">
+      <a-box depth="0.1" height="0.5" width="1" color="#FFFFFF" class="clickable"></a-box>
+      <a-text value="Next Level" position="0 0 0.06" align="center" color="#000000"></a-text>
+    </a-entity>
+
+    <!-- Panic/Exit button -->
+    <a-entity id="exitBtn" position="1.5 1.2 -2">
+      <a-box depth="0.1" height="0.5" width="1" color="#FF5555" class="clickable"></a-box>
+      <a-text value="Exit" position="0 0 0.06" align="center" color="#FFFFFF"></a-text>
+    </a-entity>
+
+    <!-- Camera + cursor for gaze interaction -->
+    <a-entity camera look-controls>
+      <a-cursor fuse="true" fuse-timeout="1500" color="#FFFFFF"></a-cursor>
+    </a-entity>
+  </a-scene>
+
+  <script>
+    // Simple controller for the VR experience
+    document.addEventListener('DOMContentLoaded', function() {
+      // Current level
+      let currentLevel = 1;
+      const maxLevel = 3;
+      
+      // Get references to elements
+      const sky = document.querySelector('#sky');
+      const instruction = document.querySelector('#instruction');
+      const nextBtn = document.querySelector('#nextBtn');
+      const exitBtn = document.querySelector('#exitBtn');
+      
+      // Set up interaction for next button
+      nextBtn.addEventListener('click', function() {
+        if (currentLevel < maxLevel) {
+          currentLevel++;
+          updateLevel();
+        } else {
+          // Complete the therapy session
+          instruction.setAttribute('value', 'Session complete! Well done.');
+          nextBtn.setAttribute('visible', 'false');
+        }
+      });
+      
+      // Exit button takes user back to starting view
+      exitBtn.addEventListener('click', function() {
+        currentLevel = 1;
+        updateLevel();
+        instruction.setAttribute('value', 'Taking you back to safety...');
+        setTimeout(() => {
+          instruction.setAttribute('value', 'Level 1: Step onto the balcony');
+        }, 2000);
+      });
+      
+      // Update visuals based on level
+      function updateLevel() {
+        // In a real app, this would change the sky texture to match the level
+        instruction.setAttribute('value', `Level ${currentLevel}: ${getLevelDescription()}`);
+        
+        // This would change the actual image when you have proper assets
+        // sky.setAttribute('src', `#lvl${currentLevel}`);
+      }
+      
+      // Get description for each level
+      function getLevelDescription() {
+        switch(currentLevel) {
+          case 1: return "Step onto the balcony";
+          case 2: return "Look down from the ledge";
+          case 3: return "Step closer to the edge";
+          default: return "";
+        }
+      }
+    });
+  </script>
+</body>
 </html>
