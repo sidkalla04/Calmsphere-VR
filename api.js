@@ -10,4 +10,3 @@ export async function sendProgress({ phobia, level }) {
       return res.json();
     });
   }
-  
