@@ -127,17 +127,6 @@ function loadLevel(index) {
     if (videoElement) videoElement.play().catch(err => console.warn('Video play failed:', err));
   }
 
-  const levelTimer = setTimeout(() => {
-    if (!state.paused) {
-      if (index < LEVELS.length - 1) {
-        handleNextLevel();
-      } else {
-        completeSession();
-      }
-    }
-  }, level.duration * 1000);
-  state.levelTimers.push(levelTimer);
-
   sendProgress({ 
     phobia: 'heights', 
     level: index + 1,

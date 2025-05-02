@@ -56,7 +56,7 @@
             position="0 1.8 -3" 
             align="center"
             color="#FFFFFF"
-            scale="1.2 1.2 1.2"
+            scale="0.8 0.8 0.8"
             font="kelsonsans"
             wrap-count="22">
     </a-text>
@@ -65,26 +65,26 @@
     <a-entity id="controlPanel" position="0 1.2 -2">
       <!-- Next button -->
       <a-entity id="nextBtn" position="0 0 0" class="clickable" cursor-listener>
-        <a-box depth="0.1" height="0.5" width="1" color="#4CAF50"
+        <a-box depth="0.05" height="0.3" width="0.6" color="#4CAF50"
                animation__hover="property: material.color; to: #8BC34A; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #4CAF50; startEvents: mouseleave; dur: 200"></a-box>
-        <a-text value="Next Level" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+        <a-text value="Next Level" position="0 0 0.03" align="center" color="#FFFFFF" scale="0.3 0.3 0.3"></a-text>
       </a-entity>
       
       <!-- Pause/breathe button -->
-      <a-entity id="breatheBtn" position="-1.2 0 0" class="clickable" cursor-listener>
-        <a-box depth="0.1" height="0.5" width="1" color="#2196F3"
+      <a-entity id="breatheBtn" position="-0.8 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.05" height="0.3" width="0.6" color="#2196F3"
                animation__hover="property: material.color; to: #64B5F6; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #2196F3; startEvents: mouseleave; dur: 200"></a-box>
-        <a-text value="Take a Breath" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+        <a-text value="Take a Breath" position="0 0 0.03" align="center" color="#FFFFFF" scale="0.3 0.3 0.3"></a-text>
       </a-entity>
       
       <!-- Exit button -->
-      <a-entity id="exitBtn" position="1.2 0 0" class="clickable" cursor-listener>
-        <a-box depth="0.1" height="0.5" width="1" color="#F44336"
+      <a-entity id="exitBtn" position="0.8 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.05" height="0.3" width="0.6" color="#F44336"
                animation__hover="property: material.color; to: #E57373; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #F44336; startEvents: mouseleave; dur: 200"></a-box>
-        <a-text value="Exit" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+        <a-text value="Exit" position="0 0 0.03" align="center" color="#FFFFFF" scale="0.3 0.3 0.3"></a-text>
       </a-entity>
     </a-entity>
 
