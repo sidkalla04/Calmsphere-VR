@@ -51,7 +51,8 @@ const elements = {
   breatheBtn: document.getElementById("breatheBtn"),
   progressFill: document.getElementById("progressFill"),
   loadingOverlay: document.getElementById("loadingOverlay"),
-  breathingGuide: document.getElementById("breathingGuide"),
+  vrBreathingGuide: document.getElementById("vrBreathingGuide"),
+  vrBreathingText: document.getElementById("vrBreathingText"),
   calmIndicator: document.getElementById("calmIndicator"),
   cursor: document.getElementById("cursor"),
 }
@@ -104,40 +105,60 @@ function setupEventListeners() {
 
 // Load a specific level by index
 function loadLevel(index) {
-  state.levelTimers.forEach((timer) => clearTimeout(timer))
-  state.levelTimers = []
-  state.currentLevel = index
-  state.levelStartTime = new Date()
-  state.paused = false
+  state.levelTimers.forEach(timer => clearTimeout(timer));
+  state.levelTimers = [];
+  state.currentLevel = index;
+  state.levelStartTime = new Date();
+  state.paused = false;
 
-  const level = LEVELS[index]
-  elements.instruction.setAttribute("value", `${level.instruction}\n${level.description}`)
-  updateProgressBar()
+  const level = LEVELS[index];
+  elements.instruction.setAttribute('value', `${level.instruction}\n${level.description}`);
+  updateProgressBar();
 
-  if (level.type === "image") {
-    elements.sky.setAttribute("src", `#${level.id}`)
-    elements.sky.setAttribute("visible", "true")
-    elements.videoSky.setAttribute("visible", "false")
-    const videoElement = document.getElementById("lvl3")
-    if (videoElement) videoElement.pause()
-  } else if (level.type === "video") {
-    elements.sky.setAttribute("visible", "false")
-    elements.videoSky.setAttribute("visible", "true")
-    const videoElement = document.getElementById("lvl3")
-    if (videoElement) videoElement.play().catch((err) => console.warn("Video play failed:", err))
+  if (level.type === 'image') {
+    elements.sky.setAttribute('src', `#${level.id}`);
+    elements.sky.setAttribute('visible', 'true');
+    elements.videoSky.setAttribute('visible', 'false');
+    const videoElement = document.getElementById('lvl3');
+    if (videoElement) videoElement.pause();
+  } else if (level.type === 'video') {
+    elements.sky.setAttribute('visible', 'false');
+    elements.videoSky.setAttribute('visible', 'true');
+    const videoElement = document.getElementById('lvl3');
+    if (videoElement) {
+      // Set video quality settings
+      videoElement.currentTime = 0;
+      videoElement.playbackRate = 1.0;
+      videoElement.volume = 1.0;
+      
+      // Ensure video is loaded before playing
+      if (videoElement.readyState >= 3) {
+        videoElement.play().catch(err => console.warn('Video play failed:', err));
+      } else {
+        videoElement.addEventListener('canplay', () => {
+          videoElement.play().catch(err => console.warn('Video play failed:', err));
+        }, { once: true });
+      }
+      
+      // Set timer for 30 seconds
+      const videoTimer = setTimeout(() => {
+        if (!state.paused) {
+          completeSession();
+        }
+      }, 60000); // 90 seconds
+      state.levelTimers.push(videoTimer);
+    }
   }
 
-  sendProgress({
-    phobia: "heights",
+  sendProgress({ 
+    phobia: 'heights', 
     level: index + 1,
-    duration: 0,
-  }).catch((err) =>
-    handleApiError({
-      requestType: "levelStart",
-      data: { phobia: "heights", level: index + 1 },
-      error: err,
-    }),
-  )
+    duration: 0
+  }).catch(err => handleApiError({
+    requestType: 'levelStart',
+    data: { phobia: 'heights', level: index + 1 },
+    error: err
+  }));
 }
 
 // Handle next level button click
@@ -184,60 +205,67 @@ function handleExit() {
 
 // Toggle breathing exercise mode
 function toggleBreathingMode() {
-  state.inBreathingMode = !state.inBreathingMode
+  state.inBreathingMode = !state.inBreathingMode;
 
   if (state.inBreathingMode) {
-    elements.breathingGuide.style.opacity = "1"
-    elements.calmIndicator.setAttribute("visible", "true")
-    startBreathingAnimation()
-    state.paused = true
+    elements.vrBreathingGuide.setAttribute('visible', 'true');
+    elements.calmIndicator.setAttribute('visible', 'true');
+    startBreathingAnimation();
+    state.paused = true;
+    
+    // Hide other UI elements during breathing mode
+    elements.instruction.setAttribute('visible', 'false');
   } else {
-    elements.breathingGuide.style.opacity = "0"
-    elements.calmIndicator.setAttribute("visible", "false")
-    stopBreathingAnimation()
-    state.paused = false
+    elements.vrBreathingGuide.setAttribute('visible', 'false');
+    elements.calmIndicator.setAttribute('visible', 'false');
+    stopBreathingAnimation();
+    state.paused = false;
+    
+    // Show instruction text again
+    elements.instruction.setAttribute('visible', 'true');
   }
 
-  logAnxiety(state.currentLevel + 1, state.inBreathingMode ? "high" : "managed").catch((err) =>
-    console.warn("Failed to log anxiety:", err),
-  )
+  logAnxiety(state.currentLevel + 1, state.inBreathingMode ? 'high' : 'managed')
+    .catch(err => console.warn('Failed to log anxiety:', err));
 }
 
 // Start the breathing animation
 function startBreathingAnimation() {
-  const breathingText = ["Breathe in...", "Hold...", "Breathe out...", "Hold..."]
-  const durations = [4000, 2000, 6000, 2000]
-  let currentStep = 0
+  const breathingText = ['Breathe in...', 'Hold...', 'Breathe out...', 'Hold...'];
+  const durations = [4000, 2000, 6000, 2000];
+  let currentStep = 0;
 
   function updateBreathingGuide() {
-    if (!state.inBreathingMode) return
-    elements.breathingGuide.querySelector(".breathing-text").textContent = breathingText[currentStep]
+    if (!state.inBreathingMode) return;
+    
+    // Update the breathing text
+    elements.vrBreathingText.setAttribute('value', breathingText[currentStep]);
 
     if (currentStep === 0) {
-      elements.calmIndicator.setAttribute("animation", {
-        property: "scale",
-        from: "0.02 0.02 0.02",
-        to: "0.05 0.05 0.05",
+      elements.calmIndicator.setAttribute('animation', {
+        property: 'scale',
+        from: '0.02 0.02 0.02',
+        to: '0.05 0.05 0.05',
         dur: durations[0],
-        easing: "easeOutQuad",
-      })
+        easing: 'easeOutQuad'
+      });
     } else if (currentStep === 2) {
-      elements.calmIndicator.setAttribute("animation", {
-        property: "scale",
-        from: "0.05 0.05 0.05",
-        to: "0.02 0.02 0.02",
+      elements.calmIndicator.setAttribute('animation', {
+        property: 'scale',
+        from: '0.05 0.05 0.05',
+        to: '0.02 0.02 0.02',
         dur: durations[2],
-        easing: "easeInQuad",
-      })
+        easing: 'easeInQuad'
+      });
     }
 
     setTimeout(() => {
-      currentStep = (currentStep + 1) % 4
-      updateBreathingGuide()
-    }, durations[currentStep])
+      currentStep = (currentStep + 1) % 4;
+      updateBreathingGuide();
+    }, durations[currentStep]);
   }
 
-  updateBreathingGuide()
+  updateBreathingGuide();
 }
 
 // Stop the breathing animation
@@ -247,38 +275,44 @@ function stopBreathingAnimation() {
 
 // Complete the therapy session
 function completeSession() {
-  const sessionDuration = (new Date() - state.sessionStartTime) / 1000
-  elements.instruction.setAttribute(
-    "value",
-    "Congratulations! You have completed all levels.\nRemove your headset when ready.",
-  )
-  elements.nextBtn.setAttribute("visible", "false")
+  const sessionDuration = (new Date() - state.sessionStartTime) / 1000;
+  
+  // Show congratulations message while keeping video playing
+  elements.instruction.setAttribute('value', 'Congratulations! You have completed all levels.\nRemove your headset when ready.');
+  elements.instruction.setAttribute('visible', 'true');
+  elements.nextBtn.setAttribute('visible', 'false');
 
-  sendProgress({
-    phobia: "heights",
+  sendProgress({ 
+    phobia: 'heights', 
     level: LEVELS.length,
     duration: Math.round(sessionDuration),
-    completed: true,
-  }).catch((err) =>
-    handleApiError({
-      requestType: "sessionComplete",
-      data: {
-        phobia: "heights",
-        level: LEVELS.length,
-        duration: Math.round(sessionDuration),
-        completed: true,
-      },
-      error: err,
-    }),
-  )
+    completed: true
+  }).catch(err => handleApiError({
+    requestType: 'sessionComplete',
+    data: { 
+      phobia: 'heights', 
+      level: LEVELS.length,
+      duration: Math.round(sessionDuration),
+      completed: true
+    },
+    error: err
+  }));
 
   const exitTimer = setTimeout(() => {
-    elements.instruction.setAttribute("value", "Returning to dashboard in 10 seconds...")
+    elements.instruction.setAttribute('value', 'Returning to dashboard in 10 seconds...');
     setTimeout(() => {
-      window.location.href = "/"
-    }, 10000)
-  }, 20000)
-  state.levelTimers.push(exitTimer)
+      // Only stop video and redirect when actually leaving
+      if (LEVELS[state.currentLevel].type === 'video') {
+        const videoElement = document.getElementById('lvl3');
+        if (videoElement) {
+          videoElement.pause();
+        }
+        elements.videoSky.setAttribute('visible', 'false');
+      }
+      window.location.href = '/';
+    }, 10000);
+  }, 20000);
+  state.levelTimers.push(exitTimer);
 }
 
 // Update the progress bar
