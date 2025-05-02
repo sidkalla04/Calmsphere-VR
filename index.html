@@ -4,132 +4,105 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>CalmSphere VRET</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      overflow: hidden;
-    }
-    .a-enter-vr-button {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-    }
-    .info-panel {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: rgba(0,0,0,0.5);
-      color: white;
-      padding: 10px;
-      border-radius: 5px;
-      z-index: 999;
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
   <!-- A-Frame -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <!-- Add A-Frame extras for video controls -->
+  <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
 </head>
 <body>
   <div class="info-panel">
     CalmSphere VRET - Height Exposure Therapy
   </div>
+  
+  <div class="progress-bar">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  
+  <div class="breathing-guide" id="breathingGuide">
+    Take slow, deep breaths...
+  </div>
+  
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <div>Loading your therapeutic environment...</div>
+  </div>
 
   <!-- VR container -->
-  <a-scene vr-mode-ui="enabled: true">
+  <a-scene vr-mode-ui="enabled: true" loading-screen="enabled: false">
     <a-assets>
-      <!-- Using the image from your second screenshot as a placeholder -->
-      <img id="lvl1" src="/height1.png" crossorigin="anonymous">
+      <!-- Environment images for each level -->
+      <img id="lvl1" src="height1.png" crossorigin="anonymous">
+      <img id="lvl2" src="height2.png" crossorigin="anonymous">
+      <!-- Video for level 3 -->
+      <video id="lvl3" src="videoplayback.mp4" loop="true" crossorigin="anonymous"></video>
+      
       <!-- Audio guidance -->
-      <audio id="guide" src="#" crossorigin="anonymous"></audio>
+      <!-- <audio id="guide1" src="/audio/level1.mp3" preload="auto" crossorigin="anonymous"></audio>
+      <audio id="guide2" src="/audio/level2.mp3" preload="auto" crossorigin="anonymous"></audio>
+      <audio id="guide3" src="/audio/level3.mp3" preload="auto" crossorigin="anonymous"></audio>
+      <audio id="complete" src="/audio/complete.mp3" preload="auto" crossorigin="anonymous"></audio>
+      <audio id="calm" src="/audio/calming.mp3" loop="true" preload="auto" crossorigin="anonymous"></audio> -->
     </a-assets>
 
     <!-- Sky (360° environment) -->
     <a-sky id="sky" src="#lvl1" rotation="0 -130 0"></a-sky>
+    <!-- This entity will hold our video for level 3 -->
+    <a-videosphere id="videoSky" src="#lvl3" rotation="0 -130 0" visible="false"></a-videosphere>
+
+    <!-- Calming visual element that follows user's view -->
+    <a-entity id="calmIndicator" position="0 0 -1" rotation="0 0 0" scale="0.02 0.02 0.02" visible="false">
+      <a-ring color="#4CAF50" radius-inner="0.8" radius-outer="1" segments-theta="64"></a-ring>
+    </a-entity>
 
     <!-- Instruction text -->
     <a-text id="instruction"
             value="Level 1: Step onto the balcony"
-            position="0 2 -3"
+            position="0 1.8 -3" 
             align="center"
             color="#FFFFFF"
-            scale="1.5 1.5 1.5"
-            font="kelsonsans">
+            scale="1.2 1.2 1.2"
+            font="kelsonsans"
+            wrap-count="22">
     </a-text>
 
-    <!-- Next button -->
-    <a-entity id="nextBtn" position="0 1.2 -2">
-      <a-box depth="0.1" height="0.5" width="1" color="#FFFFFF" class="clickable"></a-box>
-      <a-text value="Next Level" position="0 0 0.06" align="center" color="#000000"></a-text>
-    </a-entity>
-
-    <!-- Panic/Exit button -->
-    <a-entity id="exitBtn" position="1.5 1.2 -2">
-      <a-box depth="0.1" height="0.5" width="1" color="#FF5555" class="clickable"></a-box>
-      <a-text value="Exit" position="0 0 0.06" align="center" color="#FFFFFF"></a-text>
+    <!-- Controls panel -->
+    <a-entity id="controlPanel" position="0 1.2 -2">
+      <!-- Next button -->
+      <a-entity id="nextBtn" position="0 0 0" class="clickable">
+        <a-box depth="0.1" height="0.5" width="1" color="#4CAF50" class="clickable"
+               animation__hover="property: material.color; to: #8BC34A; startEvents: mouseenter; dur: 200"
+               animation__leave="property: material.color; to: #4CAF50; startEvents: mouseleave; dur: 200"></a-box>
+        <a-text value="Next Level" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+      </a-entity>
+      
+      <!-- Pause/breathe button -->
+      <a-entity id="breatheBtn" position="-1.2 0 0" class="clickable">
+        <a-box depth="0.1" height="0.5" width="1" color="#2196F3" class="clickable"
+               animation__hover="property: material.color; to: #64B5F6; startEvents: mouseenter; dur: 200"
+               animation__leave="property: material.color; to: #2196F3; startEvents: mouseleave; dur: 200"></a-box>
+        <a-text value="Take a Breath" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+      </a-entity>
+      
+      <!-- Exit button -->
+      <a-entity id="exitBtn" position="1.2 0 0" class="clickable">
+        <a-box depth="0.1" height="0.5" width="1" color="#F44336" class="clickable"
+               animation__hover="property: material.color; to: #E57373; startEvents: mouseenter; dur: 200"
+               animation__leave="property: material.color; to: #F44336; startEvents: mouseleave; dur: 200"></a-box>
+        <a-text value="Exit" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
+      </a-entity>
     </a-entity>
 
     <!-- Camera + cursor for gaze interaction -->
-    <a-entity camera look-controls>
-      <a-cursor fuse="true" fuse-timeout="1500" color="#FFFFFF"></a-cursor>
+    <a-entity camera look-controls position="0 1.6 0">
+      <a-cursor id="cursor" fuse="true" fuse-timeout="1500" color="#FFFFFF"
+                animation__fuse="property: scale; from: 1 1 1; to: 0.1 0.1 0.1; dur: 1500; startEvents: fusing"
+                animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150; startEvents: click"></a-cursor>
     </a-entity>
   </a-scene>
 
-  <script>
-    // Simple controller for the VR experience
-    document.addEventListener('DOMContentLoaded', function() {
-      // Current level
-      let currentLevel = 1;
-      const maxLevel = 3;
-      
-      // Get references to elements
-      const sky = document.querySelector('#sky');
-      const instruction = document.querySelector('#instruction');
-      const nextBtn = document.querySelector('#nextBtn');
-      const exitBtn = document.querySelector('#exitBtn');
-      
-      // Set up interaction for next button
-      nextBtn.addEventListener('click', function() {
-        if (currentLevel < maxLevel) {
-          currentLevel++;
-          updateLevel();
-        } else {
-          // Complete the therapy session
-          instruction.setAttribute('value', 'Session complete! Well done.');
-          nextBtn.setAttribute('visible', 'false');
-        }
-      });
-      
-      // Exit button takes user back to starting view
-      exitBtn.addEventListener('click', function() {
-        currentLevel = 1;
-        updateLevel();
-        instruction.setAttribute('value', 'Taking you back to safety...');
-        setTimeout(() => {
-          instruction.setAttribute('value', 'Level 1: Step onto the balcony');
-        }, 2000);
-      });
-      
-      // Update visuals based on level
-      function updateLevel() {
-        // In a real app, this would change the sky texture to match the level
-        instruction.setAttribute('value', `Level ${currentLevel}: ${getLevelDescription()}`);
-        
-        // This would change the actual image when you have proper assets
-        // sky.setAttribute('src', `#lvl${currentLevel}`);
-      }
-      
-      // Get description for each level
-      function getLevelDescription() {
-        switch(currentLevel) {
-          case 1: return "Step onto the balcony";
-          case 2: return "Look down from the ledge";
-          case 3: return "Step closer to the edge";
-          default: return "";
-        }
-      }
-    });
-  </script>
+  <!-- Load scripts -->
+  <script src="api.js"></script>
+  <script src="main.js"></script>
 </body>
 </html>
-
-
