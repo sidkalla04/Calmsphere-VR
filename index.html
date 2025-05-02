@@ -9,8 +9,8 @@
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <!-- Add A-Frame extras for video controls -->
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
-  <script src="api.js"></script>
-  <script src="main.js"></script>
+  <script type="module" src="api.js"></script>
+  <script type="module" src="main.js"></script>
 </head>
 <body>
   <div class="info-panel">
@@ -64,24 +64,24 @@
     <!-- Controls panel -->
     <a-entity id="controlPanel" position="0 1.2 -2">
       <!-- Next button -->
-      <a-entity id="nextBtn" position="0 0 0" class="clickable">
-        <a-box depth="0.1" height="0.5" width="1" color="#4CAF50" class="clickable"
+      <a-entity id="nextBtn" position="0 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.1" height="0.5" width="1" color="#4CAF50"
                animation__hover="property: material.color; to: #8BC34A; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #4CAF50; startEvents: mouseleave; dur: 200"></a-box>
         <a-text value="Next Level" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
       </a-entity>
       
       <!-- Pause/breathe button -->
-      <a-entity id="breatheBtn" position="-1.2 0 0" class="clickable">
-        <a-box depth="0.1" height="0.5" width="1" color="#2196F3" class="clickable"
+      <a-entity id="breatheBtn" position="-1.2 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.1" height="0.5" width="1" color="#2196F3"
                animation__hover="property: material.color; to: #64B5F6; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #2196F3; startEvents: mouseleave; dur: 200"></a-box>
         <a-text value="Take a Breath" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>
       </a-entity>
       
       <!-- Exit button -->
-      <a-entity id="exitBtn" position="1.2 0 0" class="clickable">
-        <a-box depth="0.1" height="0.5" width="1" color="#F44336" class="clickable"
+      <a-entity id="exitBtn" position="1.2 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.1" height="0.5" width="1" color="#F44336"
                animation__hover="property: material.color; to: #E57373; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #F44336; startEvents: mouseleave; dur: 200"></a-box>
         <a-text value="Exit" position="0 0 0.06" align="center" color="#FFFFFF" scale="0.5 0.5 0.5"></a-text>

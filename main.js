@@ -72,14 +72,14 @@ function initialize() {
 
 // Set up all event listeners
 function setupEventListeners() {
-  const nextBox = elements.nextBtn.querySelector('a-box');
-  nextBox.addEventListener('click', handleNextLevel);
+  // Next button
+  elements.nextBtn.addEventListener('click', handleNextLevel);
 
-  const breatheBox = elements.breatheBtn.querySelector('a-box');
-  breatheBox.addEventListener('click', toggleBreathingMode);
+  // Breathe button
+  elements.breatheBtn.addEventListener('click', toggleBreathingMode);
 
-  const exitBox = elements.exitBtn.querySelector('a-box');
-  exitBox.addEventListener('click', handleExit);
+  // Exit button
+  elements.exitBtn.addEventListener('click', handleExit);
 
   const videoElement = document.getElementById('lvl3');
   if (videoElement) {
@@ -306,4 +306,11 @@ document.addEventListener('visibilitychange', () => {
 });
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initialize);
+document.addEventListener('DOMContentLoaded', () => {
+  const scene = document.querySelector('a-scene');
+  if (scene.hasLoaded) {
+    initialize();
+  } else {
+    scene.addEventListener('loaded', initialize);
+  }
+});
