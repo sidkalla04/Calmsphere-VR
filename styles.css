@@ -1,94 +1,80 @@
+/* styles.css */
 body {
     margin: 0;
     padding: 0;
-    overflow: hidden;
-    font-family: 'Arial', sans-serif;
-  }
-  
-  .a-enter-vr-button {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
+    font-family: Arial, sans-serif;
   }
   
   .info-panel {
-    position: fixed;
+    position: absolute;
     top: 10px;
     left: 10px;
-    background: rgba(0,0,0,0.7);
+    background: rgba(0, 0, 0, 0.5);
     color: white;
-    padding: 15px;
-    border-radius: 8px;
-    z-index: 999;
-    font-size: 14px; /* Reduced from 16px */
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+    padding: 10px;
+    border-radius: 5px;
+    z-index: 10;
   }
   
   .progress-bar {
-    position: fixed;
-    top: 50px; /* Adjusted because heading font is smaller */
-    left: 10px;
-    width: 200px;
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
     height: 10px;
-    background: rgba(255,255,255,0.3);
+    background: #ddd;
     border-radius: 5px;
-    z-index: 999;
+    z-index: 10;
   }
   
   .progress-fill {
     height: 100%;
     background: #4CAF50;
     border-radius: 5px;
-    width: 33%;
-    transition: width 0.5s ease;
+    width: 0;
+  }
+  
+  .breathing-guide {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 24px;
+    opacity: 0;
+    transition: opacity 0.5s;
+    z-index: 10;
   }
   
   .loading-overlay {
-    position: fixed;
+    position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.8);
+    background: black;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
     color: white;
-    font-size: 24px;
+    z-index: 100;
+    opacity: 1;
+    transition: opacity 0.5s;
   }
   
   .loading-spinner {
-    border: 5px solid rgba(255,255,255,0.3);
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #3498db;
     border-radius: 50%;
-    border-top: 5px solid white;
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
     animation: spin 1s linear infinite;
-    margin-right: 15px;
+    margin-bottom: 20px;
   }
   
   @keyframes spin {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
-  }
-  
-  .breathing-guide {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0,0,0,0.5);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-  }
-  
-  /* Hide UI when in VR mode */
-  .a-enter-vr ~ .info-panel,
-  .a-enter-vr ~ .progress-bar {
-    display: none;
   }

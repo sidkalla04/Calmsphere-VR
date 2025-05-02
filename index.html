@@ -9,6 +9,8 @@
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <!-- Add A-Frame extras for video controls -->
   <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.1/dist/aframe-extras.min.js"></script>
+  <script src="api.js"></script>
+  <script src="main.js"></script>
 </head>
 <body>
   <div class="info-panel">
@@ -33,16 +35,9 @@
     <a-assets>
       <!-- Environment images for each level -->
       <img id="lvl1" src="height1.png" crossorigin="anonymous">
-      <img id="lvl2" src="height2.png" crossorigin="anonymous">
+      <img id="lvl2" src="height2.jpg" crossorigin="anonymous">
       <!-- Video for level 3 -->
       <video id="lvl3" src="videoplayback.mp4" loop="true" crossorigin="anonymous"></video>
-      
-      <!-- Audio guidance -->
-      <!-- <audio id="guide1" src="/audio/level1.mp3" preload="auto" crossorigin="anonymous"></audio>
-      <audio id="guide2" src="/audio/level2.mp3" preload="auto" crossorigin="anonymous"></audio>
-      <audio id="guide3" src="/audio/level3.mp3" preload="auto" crossorigin="anonymous"></audio>
-      <audio id="complete" src="/audio/complete.mp3" preload="auto" crossorigin="anonymous"></audio>
-      <audio id="calm" src="/audio/calming.mp3" loop="true" preload="auto" crossorigin="anonymous"></audio> -->
     </a-assets>
 
     <!-- Sky (360° environment) -->
@@ -100,9 +95,7 @@
                 animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150; startEvents: click"></a-cursor>
     </a-entity>
   </a-scene>
-
   <!-- Load scripts -->
-  <script src="api.js"></script>
-  <script src="main.js"></script>
+ 
 </body>
 </html>
