@@ -1,42 +1,50 @@
-// api.js
-export async function sendProgress(data) {
-    try {
-      const response = await fetch('/api/progress', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to send progress');
-      }
-    } catch (error) {
-      console.error('Error sending progress:', error);
-      throw error;
-    }
-  }
-  //hello
-  
-  export async function logAnxiety(level, anxietyLevel) {
-    try {
-      const response = await fetch('/api/anxiety', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ level, anxietyLevel }),
-      });
-      if (!response.ok) {
-        throw new Error('Failed to log anxiety');
-      }
-    } catch (error) {
-      console.error('Error logging anxiety:', error);
-      throw error;
-    }
-  }
-  
-  export function handleApiError(errorDetails) {
-    console.error('API Error:', errorDetails);
-    // Add custom error handling here if needed
-  }
+/**
+ * api.js
+ *
+ * This file provides mock API functions for the CalmSphere VRET application.
+ * In a real application, these would make calls to a backend server.
+ */
+
+const API_ENDPOINT = "/api" // Replace with your actual API endpoint
+
+/**
+ * Sends progress data to the server.
+ *
+ * @param {object} data - The progress data to send.
+ * @returns {Promise<object>} - A promise that resolves with the server response.
+ */
+export const sendProgress = async (data) => {
+  console.log("Sending progress:", data)
+  // Simulate API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ status: "success", message: "Progress updated" })
+    }, 500)
+  })
+}
+
+/**
+ * Logs anxiety levels to the server.
+ *
+ * @param {number} level - The current level of the therapy session.
+ * @param {string} anxietyLevel - The anxiety level ('high', 'managed', etc.).
+ * @returns {Promise<object>} - A promise that resolves with the server response.
+ */
+export const logAnxiety = async (level, anxietyLevel) => {
+  console.log(`Logging anxiety: Level ${level}, Anxiety ${anxietyLevel}`)
+  // Simulate API call
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve({ status: "success", message: "Anxiety logged" })
+    }, 500)
+  })
+}
+
+/**
+ * Handles API errors and logs them to the console.
+ *
+ * @param {object} errorData - An object containing information about the error.
+ */
+export const handleApiError = (errorData) => {
+  console.error("API Error:", errorData)
+}

@@ -14,20 +14,24 @@
 </head>
 <body>
   <div class="info-panel">
-    CalmSphere VRET - Height Exposure Therapy
+    <h1>CalmSphere VRET</h1>
+    <p>Height Exposure Therapy</p>
   </div>
   
-  <div class="progress-bar">
-    <div class="progress-fill" id="progressFill"></div>
+  <div class="progress-container">
+    <div class="progress-label">Progress</div>
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
   </div>
   
   <div class="breathing-guide" id="breathingGuide">
-    Take slow, deep breaths...
+    <div class="breathing-text">Take slow, deep breaths...</div>
   </div>
   
   <div class="loading-overlay" id="loadingOverlay">
     <div class="loading-spinner"></div>
-    <div>Loading your therapeutic environment...</div>
+    <div class="loading-text">Loading your therapeutic environment...</div>
   </div>
 
   <!-- VR container -->
@@ -50,41 +54,42 @@
       <a-ring color="#4CAF50" radius-inner="0.8" radius-outer="1" segments-theta="64"></a-ring>
     </a-entity>
 
-    <!-- Instruction text -->
+    <!-- Instruction text - positioned higher and smaller -->
     <a-text id="instruction"
             value="Level 1: Step onto the balcony"
-            position="0 1.8 -3" 
+            position="0 2.1 -2.5" 
             align="center"
             color="#FFFFFF"
-            scale="0.8 0.8 0.8"
+            scale="0.5 0.5 0.5"
             font="kelsonsans"
-            wrap-count="22">
+            wrap-count="30"
+            baseline="center">
     </a-text>
 
-    <!-- Controls panel -->
-    <a-entity id="controlPanel" position="0 1.2 -2">
+    <!-- Controls panel - positioned lower to avoid overlap with instructions -->
+    <a-entity id="controlPanel" position="0 0.9 -2">
       <!-- Next button -->
       <a-entity id="nextBtn" position="0 0 0" class="clickable" cursor-listener>
-        <a-box depth="0.05" height="0.3" width="0.6" color="#4CAF50"
+        <a-box depth="0.03" height="0.2" width="0.4" color="#4CAF50" radius="0.02"
                animation__hover="property: material.color; to: #8BC34A; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #4CAF50; startEvents: mouseleave; dur: 200"></a-box>
-        <a-text value="Next Level" position="0 0 0.03" align="center" color="#FFFFFF" scale="0.3 0.3 0.3"></a-text>
+        <a-text value="Next Level" position="0 0 0.02" align="center" color="#FFFFFF" scale="0.2 0.2 0.2"></a-text>
       </a-entity>
       
       <!-- Pause/breathe button -->
-      <a-entity id="breatheBtn" position="-0.8 0 0" class="clickable" cursor-listener>
-        <a-box depth="0.05" height="0.3" width="0.6" color="#2196F3"
+      <a-entity id="breatheBtn" position="-0.5 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.03" height="0.2" width="0.4" color="#2196F3" radius="0.02"
                animation__hover="property: material.color; to: #64B5F6; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #2196F3; startEvents: mouseleave; dur: 200"></a-box>
-        <a-text value="Take a Breath" position="0 0 0.03" align="center" color="#FFFFFF" scale="0.3 0.3 0.3"></a-text>
+        <a-text value="Breathe" position="0 0 0.02" align="center" color="#FFFFFF" scale="0.2 0.2 0.2"></a-text>
       </a-entity>
       
       <!-- Exit button -->
-      <a-entity id="exitBtn" position="0.8 0 0" class="clickable" cursor-listener>
-        <a-box depth="0.05" height="0.3" width="0.6" color="#F44336"
+      <a-entity id="exitBtn" position="0.5 0 0" class="clickable" cursor-listener>
+        <a-box depth="0.03" height="0.2" width="0.4" color="#F44336" radius="0.02"
                animation__hover="property: material.color; to: #E57373; startEvents: mouseenter; dur: 200"
                animation__leave="property: material.color; to: #F44336; startEvents: mouseleave; dur: 200"></a-box>
-        <a-text value="Exit" position="0 0 0.03" align="center" color="#FFFFFF" scale="0.3 0.3 0.3"></a-text>
+        <a-text value="Exit" position="0 0 0.02" align="center" color="#FFFFFF" scale="0.2 0.2 0.2"></a-text>
       </a-entity>
     </a-entity>
 
@@ -95,7 +100,5 @@
                 animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150; startEvents: click"></a-cursor>
     </a-entity>
   </a-scene>
-  <!-- Load scripts -->
- 
 </body>
 </html>
