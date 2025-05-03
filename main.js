@@ -10,23 +10,23 @@ const LEVELS = [
   {
     id: "lvl1",
     type: "image",
-    instruction: "Level 1: Step onto the balcony",
-    description: "You are on a balcony on the second floor. Take some time to adjust to the height.",
+    instruction: "Level 1",
+    description: "",
     duration: 10, // seconds
   },
   {
     id: "lvl2",
     type: "image",
-    instruction: "Level 2: Stand by the railing",
-    description: "Now move closer to the railing. Notice the view and your feelings.",
+    instruction: "Level 2",
+    description: "",
     duration: 10, // seconds
   },
   {
     id: "lvl3",
     type: "video",
-    instruction: "Level 3: Look over the edge",
-    description: "Move to the edge and look down. Practice your breathing techniques.",
-    duration: 10, // seconds
+    instruction: "Level 3",
+    description: "",
+    duration: null, // No automatic duration for video level
   },
 ]
 
@@ -124,7 +124,20 @@ function loadLevel(index) {
     elements.sky.setAttribute("visible", "false")
     elements.videoSky.setAttribute("visible", "true")
     const videoElement = document.getElementById("lvl3")
-    if (videoElement) videoElement.play().catch((err) => console.warn("Video play failed:", err))
+    if (videoElement) {
+      videoElement.currentTime = 0 // Reset video to start
+      videoElement.play().catch((err) => console.warn("Video play failed:", err))
+    }
+  }
+
+  // Only set timer for non-video levels
+  if (level.duration !== null) {
+    const timer = setTimeout(() => {
+      if (!state.paused) {
+        handleNextLevel()
+      }
+    }, level.duration * 1000)
+    state.levelTimers.push(timer)
   }
 
   sendProgress({
@@ -191,6 +204,12 @@ function toggleBreathingMode() {
     elements.calmIndicator.setAttribute("visible", "true")
     startBreathingAnimation()
     state.paused = true
+    
+    // Don't pause video during breathing mode
+    if (LEVELS[state.currentLevel].type === "video") {
+      const videoElement = document.getElementById("lvl3")
+      if (videoElement) videoElement.play().catch((err) => console.warn("Video play failed:", err))
+    }
   } else {
     elements.breathingGuide.style.opacity = "0"
     elements.calmIndicator.setAttribute("visible", "false")
@@ -291,8 +310,7 @@ function updateProgressBar() {
 document.addEventListener("visibilitychange", () => {
   if (document.hidden) {
     state.paused = true
-    const videoElement = document.getElementById("lvl3")
-    if (videoElement && !videoElement.paused) videoElement.pause()
+    // Don't pause video when page is hidden
   } else {
     if (!state.inBreathingMode) {
       if (LEVELS[state.currentLevel].type === "video") {
