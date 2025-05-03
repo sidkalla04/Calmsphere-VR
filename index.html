@@ -30,6 +30,22 @@
     <div class="loading-text">Loading your therapeutic environment...</div>
   </div>
 
+  <div id="landingOverlay" style="
+    position: fixed; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    background: rgba(0,0,0,0.95); 
+    z-index: 1000; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    justify-content: center;
+  ">
+    <h2 style="color: #fff; margin-bottom: 2rem;">Choose Your Therapy</h2>
+    <button onclick="startTherapy('heights')" style="margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem;">Fear of Heights</button>
+    <button onclick="startTherapy('public-speaking')" style="margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem;">Fear of Public Speaking</button>
+    <button onclick="startTherapy('spiders')" style="margin: 1rem; padding: 1rem 2rem; font-size: 1.2rem;">Fear of Spiders</button>
+  </div>
+
   <!-- VR container -->
   <a-scene vr-mode-ui="enabled: true" loading-screen="enabled: false">
     <a-assets>
@@ -122,5 +138,42 @@
                 animation__click="property: scale; from: 0.1 0.1 0.1; to: 1 1 1; dur: 150; startEvents: click"></a-cursor>
     </a-entity>
   </a-scene>
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const scene = document.querySelector('a-scene');
+      const instruction = document.querySelector('#instruction');
+
+      scene.addEventListener('enter-vr', () => {
+        instruction.setAttribute('visible', 'false');
+      });
+
+      scene.addEventListener('exit-vr', () => {
+        instruction.setAttribute('visible', 'true');
+      });
+    });
+
+    function startTherapy(phobia) {
+      // Hide the landing overlay
+      document.getElementById('landingOverlay').style.display = 'none';
+
+      // Optionally, you can store the selected phobia for use in your VR scene logic
+      window.selectedPhobia = phobia;
+
+      // Example: Change the instruction text or assets based on phobia
+      const instruction = document.querySelector('#instruction');
+      if (phobia === 'heights') {
+        instruction.setAttribute('value', 'Level 1: Step onto the balcony');
+        // Optionally, set sky or assets for heights
+      } else if (phobia === 'public-speaking') {
+        instruction.setAttribute('value', 'Level 1: Step onto the stage');
+        // Optionally, set sky or assets for public speaking
+      } else if (phobia === 'spiders') {
+        instruction.setAttribute('value', 'Level 1: Approach the spider');
+        // Optionally, set sky or assets for spiders
+      }
+      // You can expand this logic to load different assets or environments as needed
+    }
+  </script>
 </body>
 </html>
